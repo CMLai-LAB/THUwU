@@ -16,6 +16,12 @@ const TIME_MAPPING = {
 	"13": "21:20 ~ 22:10",
 }
 
-const YEAR = '112', SEMESTER = '1';
+let currentTime = new Date();
+const SEMESTER = (currentTime.getMonth() >= 1 && currentTime.getMonth() < 6) 
+	? '2' 
+	: '1';
+const YEAR = SEMESTER === '2' 
+	? currentTime.getFullYear() - 1911-11 
+	: currentTime.getFullYear() - 1911;
 
 const APP_URL = `${location.protocol}//${location.host}${location.pathname}`;
