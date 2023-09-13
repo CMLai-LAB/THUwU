@@ -33,7 +33,7 @@ class CoursesSpider(scrapy.Spider):
             
             course_obj = {
                 "id": id_val.strip() if id_val is not None else "",
-                "url": url_val.strip() if url_val is not None else "",
+                "url": "https://course.thu.edu.tw" + url_val.strip() if url_val is not None else "",
                 "name": name_val.strip() if name_val is not None else "",
                 "credit": max(credit_val.strip().split('-')) if credit_val is not None else "",
                 "time": time_val.strip() if time_val is not None else "",
