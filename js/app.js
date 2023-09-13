@@ -178,10 +178,11 @@ function toggleCourse(courseId) {
 }
 
 function parseTime(timeCode) {
-    const timeList = timeCode.match(/[1-7][A-Z]+/g);
-    const result = timeList.map(
-        code => [...code].map(char => `${code[0]}${char}`).slice(1)
-    ).flat();
+    const timeList = timeCode.match(/\u661F\u671F[\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u65E5]\/[0-9]+(\,[0-9]+)*/g);
+    const result = timeList.map(function(code) {
+        let time_arr = code.split('/')[1].split(',');
+        return time_arr.map(time => code[2] + time);
+    }).flat();
 
     return result;
 }
