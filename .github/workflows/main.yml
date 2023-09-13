@@ -15,13 +15,11 @@ jobs:
         with:
           ref: standalone
       - uses: actions/setup-python@v4
-      - uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-activate-base: true
-          activate-environment: ""
+          python-version: '3.10'
       - name: "Install crawler's dependencies"
         run: |
-          conda install -c conda-forge scrapy
+          pip install Scrapy
       
       - name: "Execute the crawler"
         working-directory: ./crawler
