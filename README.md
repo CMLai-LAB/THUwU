@@ -1,5 +1,5 @@
 # TH*UwU*
-東海選課模擬器 / THU course selection simulator.
+東海選課模擬器(?) / THU course selection simulator.
 
 - 選課模擬
 - 分享連結
