@@ -1,5 +1,4 @@
 import scrapy
-import json
 import datetime
 
 class CoursesSpider(scrapy.Spider):
@@ -7,6 +6,8 @@ class CoursesSpider(scrapy.Spider):
 
     def start_requests(self):
         semester = self.getSemester()
+
+        # Get all urls
         urls = [
                 "https://course.thu.edu.tw/view-dept/" + str(semester['year'])  + "/" + str(semester['semester']) + "/everything",
         ]
@@ -21,8 +22,6 @@ class CoursesSpider(scrapy.Spider):
 
     def parse(self, response):
         target_table = response.xpath("/html/body/div[1]/div[2]/div[2]/div[2]/div/table[2]/tbody")
-
-        data_obj = {}
 
         for course in target_table.xpath(".//tr"):
             id_val = course.xpath(".//td[1]/a/text()").extract_first()
@@ -41,15 +40,7 @@ class CoursesSpider(scrapy.Spider):
                 "teacher": teacher_val.strip() if teacher_val is not None else "",
             }
 
-            data_obj[id_val.strip()] = course_obj
-
-        # Output to json file
-        semester = self.getSemester()
-        filename = '../course-data/' + str(semester['year'])+str(semester['semester']) + '-data.json'
-        with open(filename, 'w') as f:
-            json.dump(data_obj, f, ensure_ascii=False, indent=4)
-
-
+            yield course_obj
 
     def getSemester(self):
         today = datetime.date.today()
