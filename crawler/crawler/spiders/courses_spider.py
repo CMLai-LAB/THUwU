@@ -1,4 +1,5 @@
 import scrapy
+import json
 import datetime
 
 class CoursesSpider(scrapy.Spider):
@@ -20,6 +21,9 @@ class CoursesSpider(scrapy.Spider):
 
     def parse(self, response):
         target_table = response.xpath("/html/body/div[1]/div[2]/div[2]/div[2]/div/table[2]/tbody")
+
+        data_obj = {}
+
         for course in target_table.xpath(".//tr"):
             id_val = course.xpath(".//td[1]/a/text()").extract_first()
             url_val = course.xpath(".//td[1]/a/@href").extract_first()
@@ -27,14 +31,24 @@ class CoursesSpider(scrapy.Spider):
             credit_val = course.xpath(".//td[3]/text()").extract_first()
             time_val = course.xpath(".//td[4]/text()").extract_first()
             teacher_val = course.xpath(".//td[5]/a/text()").extract_first()
-            yield {
-                    "id": id_val.strip() if id_val is not None else "",
-                    "url": url_val.strip() if url_val is not None else "",
-                    "name": name_val.strip() if name_val is not None else "",
-                    "credit": credit_val.strip() if credit_val is not None else "",
-                    "time": time_val.strip() if time_val is not None else "",
-                    "teacher": teacher_val.strip() if teacher_val is not None else "",
+            
+            course_obj = {
+                "id": id_val.strip() if id_val is not None else "",
+                "url": url_val.strip() if url_val is not None else "",
+                "name": name_val.strip() if name_val is not None else "",
+                "credit": credit_val.strip() if credit_val is not None else "",
+                "time": time_val.strip() if time_val is not None else "",
+                "teacher": teacher_val.strip() if teacher_val is not None else "",
             }
+
+            data_obj[id_val.strip()] = course_obj
+
+        # Output to json file
+        semester = self.getSemester()
+        filename = '../course-data/' + str(semester['year'])+str(semester['semester']) + '-data.json'
+        with open(filename, 'w') as f:
+            json.dump(data_obj, f, ensure_ascii=False, indent=4)
+
 
 
     def getSemester(self):
@@ -43,4 +57,3 @@ class CoursesSpider(scrapy.Spider):
             return {'year': today.year - 1911 - 1, 'semester': 2}
         else:
             return {'year': today.year - 1911, 'semester': 1}
-
