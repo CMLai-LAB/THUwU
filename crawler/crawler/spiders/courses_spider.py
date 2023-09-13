@@ -36,7 +36,7 @@ class CoursesSpider(scrapy.Spider):
                 "id": id_val.strip() if id_val is not None else "",
                 "url": url_val.strip() if url_val is not None else "",
                 "name": name_val.strip() if name_val is not None else "",
-                "credit": credit_val.strip() if credit_val is not None else "",
+                "credit": max(credit_val.strip().split('-')) if credit_val is not None else "",
                 "time": time_val.strip() if time_val is not None else "",
                 "teacher": teacher_val.strip() if teacher_val is not None else "",
             }
