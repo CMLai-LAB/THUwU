@@ -24,7 +24,7 @@ jobs:
       - name: "Execute the crawler"
         working-directory: ./crawler
         run: |
-          scrapy crawl courses -O ../course-data/1121-data.json
+          scrapy crawl courses
     
       - name: deploy
         uses: peaceiris/actions-gh-pages@v3
