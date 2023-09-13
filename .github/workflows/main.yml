@@ -1,0 +1,32 @@
+name: update data and deploy
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+  push:
+    branches:
+      - 'standalone'
+
+jobs:
+  update-course:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: standalone
+      - uses: actions/setup-python@v4
+
+      - name: "Install crawler's dependencies"
+        run: |
+          pip install Scrapy
+      
+      - name: "Execute the crawler"
+        working-directory: ./crawler
+        run: |
+          scrapy crawl courses -O ../course-data/1121-data.json
+    
+      - name: deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
