@@ -116,7 +116,7 @@ function openModal(courseId) {
     fields[3].textContent = data.time;
 
     modal.querySelector('.card-header-title').textContent = data.name;
-    //modal.querySelector('#outline').href = data.url;
+    modal.querySelector('#outline').href = data.url;
 }
 
 function appendCourseElement(course, search = false) {
