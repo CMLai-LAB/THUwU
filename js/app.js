@@ -115,6 +115,8 @@ function openModal(courseId) {
     fields[2].textContent = data.teacher;
     fields[3].textContent = data.time;
 
+    modal.querySelector('.card-footer').querySelector('a').href = data.url;
+
     modal.querySelector('.card-header-title').textContent = data.name;
     modal.querySelector('#outline').href = `https://timetable.nctu.edu.tw/?r=main/crsoutline&Acy=${YEAR}&Sem=${SEMESTER}&CrsNo=${courseId}&lang=zh-tw`;
 }
