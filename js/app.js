@@ -37,19 +37,19 @@ if (location.search.includes("share=")) {
 }
 
 // Render timetable.
-Object.keys(TIME_MAPPING).forEach(period => {
+for (const period in TIME_MAPPING) {
     const div = document.createElement("div");
     div.textContent = `${period} / ${TIME_MAPPING[period]}`;
     document.querySelector(".time-interval").appendChild(div);
-});
+}
 
-Object.keys(TIME_MAPPING).forEach(period => {
+for (const period in TIME_MAPPING) {
     for (let day = 1; day <= 7; ++day) {
         const div = document.createElement("div");
         div.id = `${day}${period}`;
         document.querySelector('.content').appendChild(div);
     }
-});
+}
 
 // Fetch course data.
 fetch(`course-data/${YEAR}${SEMESTER}-data.json`)
