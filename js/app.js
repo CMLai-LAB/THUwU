@@ -114,6 +114,16 @@ function openModal(courseId) {
     fields[1].textContent = data.credit;
     fields[2].textContent = data.teacher;
     fields[3].textContent = data.time;
+    fields[4].textContent = data.description;
+    data.grading.forEach((grading) => {
+    	fields[5].querySelector('tbody').innerHTML = `
+    	<tr>
+    	<td>$(grading.target)</td>
+    	<td>$(grading.ratio)</td>
+    	<td>$(grading.description)</td>
+	</tr>
+    	`
+    });
 
     modal.querySelector('.card-header-title').textContent = data.name;
     modal.querySelector('#outline').href = data.url;
