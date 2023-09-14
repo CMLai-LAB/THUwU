@@ -37,19 +37,19 @@ if (location.search.includes("share=")) {
 }
 
 // Render timetable.
-for (const period in TIME_MAPPING) {
-    const div = document.createElement("div");
-    div.textContent = `${period} / ${TIME_MAPPING[period]}`;
-    document.querySelector(".time-interval").appendChild(div);
-}
+Object.keys(TIME_MAPPING).forEach(period => {
+	const div = document.createElement("div");
+	div.textContent = `${period} / ${TIME_MAPPING[period]}`;
+	document.querySelector(".time-interval").appendChild(div);
+});
 
-for (const period in TIME_MAPPING) {
-    for (let day = 1; day <= 7; ++day) {
-        const div = document.createElement("div");
-        div.id = `${day}${period}`;
-        document.querySelector('.content').appendChild(div);
-    }
-}
+Object.keys(TIME_MAPPING).forEach(period => {
+	for (let day = 1; day <= 7; ++day) {
+		const div = document.createElement("div");
+		div.id = `${day}${period}`;
+		document.querySelector('.content').appendChild(div);
+	}
+});
 
 // Fetch course data.
 fetch(`course-data/${YEAR}${SEMESTER}-data.json`)
@@ -181,7 +181,7 @@ function parseTime(timeCode) {
     const timeList = timeCode.match(/\u661F\u671F[\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u65E5]\/[0-9]+(\,[0-9]+)*/g);
     const result = timeList.map(function(code) {
         let time_arr = code.split('/')[1].split(',');
-        return time_arr.map(time => code[2] + time);
+        return time_arr.map(time => WEEK_MAPPING[code[2]] + time);
     }).flat();
 
     return result;
