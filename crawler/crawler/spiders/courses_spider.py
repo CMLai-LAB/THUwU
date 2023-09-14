@@ -25,22 +25,55 @@ class CoursesSpider(scrapy.Spider):
 
         for course in target_table.xpath(".//tr"):
             id_val = course.xpath(".//td[1]/a/text()").extract_first()
-            url_val = course.xpath(".//td[1]/a/@href").extract_first()
+            initial_url = course.xpath(".//td[1]/a/@href").extract_first()
             name_val = course.xpath(".//td[2]/a/text()").extract_first()
             credit_val = course.xpath(".//td[3]/text()").extract_first()
             time_val = course.xpath(".//td[4]/text()").extract_first()
             teacher_val = course.xpath(".//td[5]/a/text()").extract_first()
-            
-            course_obj = {
-                "id": id_val.strip() if id_val is not None else "",
-                "url": "https://course.thu.edu.tw" + url_val.strip() if url_val is not None else "",
-                "name": name_val.strip() if name_val is not None else "",
-                "credit": max(credit_val.strip().split('-')) if credit_val is not None else "",
-                "time": time_val.strip() if time_val is not None else "",
-                "teacher": teacher_val.strip() if teacher_val is not None else "",
-            }
 
-            yield course_obj
+            yield response.follow(
+                    initial_url, 
+                    callback=self.parseCourse,
+                    meta={
+                        'id': id_val.strip() if id_val is not None else "",
+                        'name': name_val.strip() if name_val is not None else "",
+                        'credit': max(credit_val.strip().split('-')) if credit_val is not None else "",
+                        'time': time_val.strip() if time_val is not None else "",
+                        'teacher': teacher_val.strip() if teacher_val is not None else "",
+                    }
+            )
+
+    def parseCourse(self, response):
+        # Get url
+        url_val = response.xpath("/html/body/div[1]/div[2]/div[2]/div[5]/div[2]/div[3]/p/a/@href").extract_first()
+
+        # Get description
+        desc_val = response.xpath("/html/body/div[1]/div[2]/div[2]/div[4]/div[2]/p[2]/text()").extract_first()
+
+        # Get grading
+        grading_table = response.xpath("/html/body/div[1]/div[2]/div[2]/div[2]/div/table/tbody")
+        grading_items = []
+        for item in grading_table.xpath(".//tr"):
+            grading_target = item.xpath(".//td[1]/text()").extract_first()
+            grading_ratio = item.xpath(".//td[2]/text()").extract_first()
+            grading_desc = item.xpath(".//td[3]/text()").extract_first()
+            grading_items.append({
+                "target": grading_target.strip() if grading_target is not None else "",
+                "ratio": grading_ratio.strip() if grading_ratio is not None else "",
+                "description": grading_desc.strip() if grading_desc is not None else "",
+            })
+
+        # Create course object
+        yield {
+            'id': response.meta['id'],
+            'name': response.meta['name'],
+            'credit': response.meta['credit'],
+            'time': response.meta['time'],
+            'teacher': response.meta['teacher'],
+            'url': url_val.strip() if url_val is not None else "",
+            'description': desc_val.strip() if desc_val is not None else "",
+            'grading': grading_items,
+        }
 
     def getSemester(self):
         today = datetime.date.today()
