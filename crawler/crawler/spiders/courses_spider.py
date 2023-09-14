@@ -53,15 +53,18 @@ class CoursesSpider(scrapy.Spider):
         # Get grading
         grading_table = response.xpath("/html/body/div[1]/div[2]/div[2]/div[2]/div/table/tbody")
         grading_items = []
+        flag = False
         for item in grading_table.xpath(".//tr"):
             grading_target = item.xpath(".//td[1]/text()").extract_first()
             grading_ratio = item.xpath(".//td[2]/text()").extract_first()
             grading_desc = item.xpath(".//td[3]/text()").extract_first()
-            grading_items.append({
-                "target": grading_target.strip() if grading_target is not None else "",
-                "ratio": grading_ratio.strip() if grading_ratio is not None else "",
-                "description": grading_desc.strip() if grading_desc is not None else "",
-            })
+            if flag:
+                grading_items.append({
+                    "target": grading_target.strip() if grading_target is not None else "",
+                    "ratio": grading_ratio.strip() if grading_ratio is not None else "",
+                    "description": grading_desc.strip() if grading_desc is not None else "",
+                })
+            flag = True
 
         # Create course object
         yield {
