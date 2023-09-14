@@ -37,13 +37,13 @@ if (location.search.includes("share=")) {
 }
 
 // Render timetable.
-Object.keys(TIME_MAPPING).forEach(period => {
+TIME_IDX.forEach(period => {
 	const div = document.createElement("div");
 	div.textContent = `${period} / ${TIME_MAPPING[period]}`;
 	document.querySelector(".time-interval").appendChild(div);
 });
 
-Object.keys(TIME_MAPPING).forEach(period => {
+TIME_IDX.forEach(period => {
 	for (let day = 1; day <= 7; ++day) {
 		const div = document.createElement("div");
 		div.id = `${day}${period}`;
