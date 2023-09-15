@@ -17,8 +17,8 @@ class CoursesSpider(scrapy.Spider):
     def getUrls(self, response):
         target_table = response.xpath("/html/body/div/div[2]/div[2]/div[2]/div[2]/table/tbody")
         for url in target_table.xpath(".//tr"):
-            url = url.xpath(".//td[1]/a/@href").get()
             department = url.xpath(".//td[1]/a/text()").get()
+            url = url.xpath(".//td[1]/a/@href").get()
             yield response.follow(
                 url,
                 callback=self.parse,
