@@ -111,13 +111,14 @@ function openModal(courseId) {
     const data = courseData[courseId];
     const fields = modal.querySelectorAll('dd');
     fields[0].textContent = data.id;
-    fields[1].textContent = data.credit;
-    fields[2].textContent = data.teacher;
-    fields[3].textContent = data.time;
-    fields[4].textContent = data.description;
-    fields[5].querySelector('tbody').innerHTML = "";
+    fields[1].textContent = data.department;
+    fields[2].textContent = data.credit;
+    fields[3].textContent = data.teacher;
+    fields[4].textContent = data.time;
+    fields[5].textContent = data.description;
+    fields[6].querySelector('tbody').innerHTML = "";
     data.grading.forEach((grading) => {
-    	fields[5].querySelector('tbody').innerHTML += `
+    	fields[6].querySelector('tbody').innerHTML += `
     	<tr>
     	<td>${grading.target}</td>
     	<td>${grading.ratio}</td>

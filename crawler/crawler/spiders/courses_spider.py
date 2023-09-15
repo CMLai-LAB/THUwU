@@ -18,7 +18,14 @@ class CoursesSpider(scrapy.Spider):
         target_table = response.xpath("/html/body/div/div[2]/div[2]/div[2]/div[2]/table/tbody")
         for url in target_table.xpath(".//tr"):
             url = url.xpath(".//td[1]/a/@href").get()
-            yield response.follow(url, callback=self.parse)
+            department = url.xpath(".//td[1]/text()").get()
+            yield response.follow(
+                url,
+                callback=self.parse,
+                meta={
+                    'department': department.strip() if department is not None else "",
+                }
+            )
 
     def parse(self, response):
         target_table = response.xpath("/html/body/div[1]/div[2]/div[2]/div[2]/div/table[2]/tbody")
@@ -40,6 +47,7 @@ class CoursesSpider(scrapy.Spider):
                         'credit': max(credit_val.strip().split('-')) if credit_val is not None else "",
                         'time': time_val.strip() if time_val is not None else "",
                         'teacher': teacher_val.strip() if teacher_val is not None else "",
+                        'department': response.meta['department'],
                     }
             )
 
@@ -73,6 +81,7 @@ class CoursesSpider(scrapy.Spider):
             'credit': response.meta['credit'],
             'time': response.meta['time'],
             'teacher': response.meta['teacher'],
+            'department': response.meta['department'],
             'url': url_val.strip() if url_val is not None else "",
             'description': desc_val.strip() if desc_val is not None else "無資料",
             'grading': grading_items,
