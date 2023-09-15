@@ -283,6 +283,32 @@ document.getElementById("download-link").onclick = () => {
     }, 500);
 }
 
+document.getElementById("clear-table").onclick = () => {
+    const selectedDom = document.getElementsByClassName("selected course-list")[0];
+    const courseDoms = selectedDom.getElementsByClassName("toggle-course is-selected");
+
+    if (courseDoms.length === 0) {
+        Toastify({
+            text: "您尚未選課，無法清空課表",
+            backgroundColor: "linear-gradient(147deg, #f71735 0%, #db3445 74%)",
+            close: true,
+            duration: 3000
+        }).showToast();
+    } else {
+        let cnt = courseDoms.length;
+        while (cnt-- > 0) courseDoms[0].click();
+
+        Toastify({
+            text: "已清空課表!",
+            // Use pastel blue color
+            backgroundColor: "linear-gradient(147deg, #00d2ff 0%, #3a7bd5 74%)",
+            close: true,
+            duration: 3000
+        }).showToast();
+    }
+}
+
+
 document.querySelector('.modal-background').onclick =
     document.querySelector('.card-header-icon').onclick =
     () => document.querySelector('.modal').classList.remove('is-active');
