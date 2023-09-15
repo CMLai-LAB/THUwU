@@ -127,14 +127,15 @@ function openModal(courseId) {
     	`
     });
 
-    modal.querySelector('.card-header-title').textContent = data.name;
+    modal.querySelector('.card-header-title').textContent = data.type + "-" + data.name;
     modal.querySelector('#outline').href = data.url;
 }
 
 function appendCourseElement(course, search = false) {
     const template = document.getElementById("courseTemplate");
-    template.content.querySelector(".tag.is-primary").textContent = course.id;
-    template.content.querySelector(".tag.is-danger").textContent = course.type;
+    template.content.getElementById("id-tag").textContent = course.id;
+    template.content.getElementById("type-tag").textContent = course.type;
+    template.content.getElementById("type-tag").className = (course.type === "必修") ? "tag is-rounded is-danger" : "tag is-rounded is-white";
     template.content.getElementById("name").textContent = course.name;
     template.content.getElementById("detail").textContent = `${course.teacher}・${+course.credit} 學分`;
     template.content.querySelector(".course").dataset.id = course.id;
