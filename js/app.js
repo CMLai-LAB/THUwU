@@ -191,11 +191,11 @@ function toggleCourse(courseId) {
 
 function parseTime(timeCode) {
     const timeList
-        = timeCode.match(/\u661F\u671F[\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u65E5]\/[0-9]+(\,[0-9]+)*/g);
+        = timeCode.match(/[\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u65E5]\/[0-9]+(\,[0-9]+)*/g);
 
     return timeList.map(function(code) {
         let time_arr = code.split('/')[1].split(',');
-        return time_arr.map(time => WEEK_MAPPING[code[2]] + time);
+        return time_arr.map(time => WEEK_MAPPING[code[0]] + time);
     }).flat();
 }
 
