@@ -189,13 +189,13 @@ function toggleCourse(courseId) {
 }
 
 function parseTime(timeCode) {
-    const timeList = timeCode.match(/\u661F\u671F[\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u65E5]\/[0-9]+(\,[0-9]+)*/g);
-    const result = timeList.map(function(code) {
+    const timeList
+        = timeCode.match(/\u661F\u671F[\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u65E5]\/[0-9]+(\,[0-9]+)*/g);
+
+    return timeList.map(function(code) {
         let time_arr = code.split('/')[1].split(',');
         return time_arr.map(time => WEEK_MAPPING[code[2]] + time);
     }).flat();
-
-    return result;
 }
 
 function renderPeriodBlock(course) {
@@ -258,6 +258,28 @@ document.getElementById("copy-link").onclick = () => {
     }
 
     document.body.removeChild(copy);
+}
+
+document.getElementById("download-link").onclick = () => {
+    document.querySelectorAll('#main-table').forEach(table_element => {
+        table_element.classList.add('bg-white');
+    });
+    document.querySelectorAll('.btn-outline-light').forEach(table_element => {
+        table_element.classList.remove('btn-outline-light');
+        table_element.classList.add('btn-outline-dark');
+    });
+    setTimeout(function(){
+        let table = document.getElementById("main-table");
+        domtoimage.toPng(table)
+            .then(function (dataURL) {
+                var link = document.createElement('a');
+                link.href = dataURL;
+                link.download = YEAR + '-' + SEMESTER + '_timetable.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+    }, 500);
 }
 
 document.querySelector('.modal-background').onclick =
