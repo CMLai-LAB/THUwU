@@ -133,7 +133,8 @@ function openModal(courseId) {
 
 function appendCourseElement(course, search = false) {
     const template = document.getElementById("courseTemplate");
-    template.content.querySelector(".tag").textContent = course.id;
+    template.content.querySelector(".tag.is-primary").textContent = course.id;
+    template.content.querySelector(".tag.is-danger").textContent = course.type;
     template.content.getElementById("name").textContent = course.name;
     template.content.getElementById("detail").textContent = `${course.teacher}・${+course.credit} 學分`;
     template.content.querySelector(".course").dataset.id = course.id;

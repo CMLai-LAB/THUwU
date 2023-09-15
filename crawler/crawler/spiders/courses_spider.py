@@ -34,6 +34,7 @@ class CoursesSpider(scrapy.Spider):
             id_val = course.xpath(".//td[1]/a/text()").extract_first()
             initial_url = course.xpath(".//td[1]/a/@href").extract_first()
             name_val = course.xpath(".//td[2]/a/text()").extract_first()
+            name_type_arr = name_val.strip().split('-')
             credit_val = course.xpath(".//td[3]/text()").extract_first()
             time_val = course.xpath(".//td[4]/text()").extract_first()
             teacher_val = course.xpath(".//td[5]/a/text()").extract_first()
@@ -43,7 +44,8 @@ class CoursesSpider(scrapy.Spider):
                     callback=self.parseCourse,
                     meta={
                         'id': id_val.strip() if id_val is not None else "",
-                        'name': name_val.strip() if name_val is not None else "",
+                        'type': name_type_arr[0] if name_type_arr is not None else "",
+                        'name': name_type_arr[1] if name_type_arr is not None else "",
                         'credit': max(credit_val.strip().split('-')) if credit_val is not None else "",
                         'time': time_val.strip() if time_val is not None else "",
                         'teacher': teacher_val.strip() if teacher_val is not None else "",
@@ -77,6 +79,7 @@ class CoursesSpider(scrapy.Spider):
         # Create course object
         yield {
             'id': response.meta['id'],
+            'type': response.meta['type'],
             'name': response.meta['name'],
             'credit': response.meta['credit'],
             'time': response.meta['time'],
