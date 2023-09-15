@@ -74,7 +74,7 @@ class CoursesSpider(scrapy.Spider):
             'time': response.meta['time'],
             'teacher': response.meta['teacher'],
             'url': url_val.strip() if url_val is not None else "",
-            'description': desc_val.strip() if desc_val is not None else "",
+            'description': desc_val.strip() if desc_val is not None else "無資料",
             'grading': grading_items,
         }
 
