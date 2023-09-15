@@ -115,8 +115,9 @@ function openModal(courseId) {
     fields[2].textContent = data.teacher;
     fields[3].textContent = data.time;
     fields[4].textContent = data.description;
+    fields[5].querySelector('tbody').innerHTML = "";
     data.grading.forEach((grading) => {
-    	fields[5].querySelector('tbody').innerHTML = `
+    	fields[5].querySelector('tbody').innerHTML += `
     	<tr>
     	<td>${grading.target}</td>
     	<td>${grading.ratio}</td>
