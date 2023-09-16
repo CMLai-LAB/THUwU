@@ -38,5 +38,8 @@ const SEMESTER = (currentTime.getMonth() >= 1 && currentTime.getMonth() < 6)
 const YEAR = SEMESTER === '2' 
 	? currentTime.getFullYear() - 1911-11 
 	: currentTime.getFullYear() - 1911;
+document.getElementById('semester-tag').innerHTML = `${YEAR} 學年度 第 ${SEMESTER} 學期`;
+document.getElementById('semester-tag').href = `https://course.thu.edu.tw/view-dept/${YEAR}/${SEMESTER}`;
+
 
 const APP_URL = `${location.protocol}//${location.host}${location.pathname}`;

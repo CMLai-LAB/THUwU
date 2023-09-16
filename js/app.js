@@ -134,8 +134,17 @@ function openModal(courseId) {
 function appendCourseElement(course, search = false) {
     const template = document.getElementById("courseTemplate");
     template.content.getElementById("id-tag").textContent = course.id;
-    template.content.getElementById("type-tag").textContent = course.type;
-    template.content.getElementById("type-tag").className = (course.type === "必修") ? "tag is-rounded is-danger" : "tag is-rounded is-white";
+
+    // Set course block according to course type
+    let type_tag = template.content.getElementById("type-tag");
+    type_tag.textContent = course.type;
+    type_tag.className = (course.type === "必修")
+        ? "tag is-rounded is-danger"
+        : "tag is-rounded is-white";
+    type_tag.className = (course.type === "必選")
+        ? "tag is-rounded is-info"
+        : type_tag.className;
+
     template.content.getElementById("name").textContent = course.name;
     template.content.getElementById("detail").textContent = `${course.teacher}・${+course.credit} 學分`;
     template.content.querySelector(".course").dataset.id = course.id;
