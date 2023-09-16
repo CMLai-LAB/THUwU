@@ -34,7 +34,7 @@ class CoursesSpider(scrapy.Spider):
             id_val = course.xpath(".//td[1]/a/text()").extract_first()
             initial_url = course.xpath(".//td[1]/a/@href").extract_first()
             name_val = course.xpath(".//td[2]/a/text()").extract_first()
-            name_type_arr = name_val.strip().split('-')
+            name_type_arr = name_val.strip().split('-') if name_val is not None else None
             credit_val = course.xpath(".//td[3]/text()").extract_first()
             time_val = course.xpath(".//td[4]/text()").extract_first()
             teacher_val = course.xpath(".//td[5]/a/text()").extract_first()
