@@ -18,7 +18,7 @@ class CrawlerPipeline:
         semester = self.getSemester()
         filename = '../course-data/' + str(semester['year'])+str(semester['semester']) + '-data.json'
         with open(filename, 'w') as outfile:
-            json.dump(self.data_obj, outfile, ensure_ascii=False, indent=4)
+            json.dump(self.data_obj, outfile, ensure_ascii=False, indent=None, separators=(',', ':'))
 
     def process_item(self, item, spider):
         self.data_obj[item["id"]] = item
