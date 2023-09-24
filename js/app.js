@@ -202,7 +202,7 @@ function toggleCourse(courseId) {
 
 function parseTime(timeCode) {
     const timeList
-        = timeCode.match(/[\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u65E5]\/[0-9]+(\,[0-9]+)*/g);
+        = timeCode.match(/[\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u65E5]\/(([0-9]+)|([AB]))(\,(([0-9]+)|([AB])))*/g);
 
     return timeList.map(function(code) {
         let time_arr = code.split('/')[1].split(',');

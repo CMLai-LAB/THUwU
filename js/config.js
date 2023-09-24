@@ -1,10 +1,10 @@
 const TIME_MAPPING = {
-	0: "7:10 ~ 8:00",
+	'A': "7:10 ~ 8:00",
 	1: "8:10 ~ 9:00",
 	2: "9:10 ~ 10:00",
 	3: "10:20 ~ 11:10",
 	4: "11:20 ~ 12:10",
-	4.5: "12:10 ~ 13:00",
+	'B': "12:10 ~ 13:00",
 	5: "13:10 ~ 14:00",
 	6: "14:10 ~ 15:00",
 	7: "15:20 ~ 16:10",
@@ -16,7 +16,25 @@ const TIME_MAPPING = {
 	13: "21:20 ~ 22:10",
 }
 function compareTimeIdx(a, b) {
-	return parseFloat(a) - parseFloat(b);
+	if (Number.isFinite(a) && Number.isFinite(b)) {
+		return parseFloat(a) - parseFloat(b);
+	} else {
+		let a_val = a, b_val = b;
+		if (a === 'A') {
+			a_val = 0;
+		}
+		if (b === 'A') {
+			b_val = 0;
+		}
+		if (a === 'B') {
+			a_val = 4.5;
+		}
+		if (b === 'B') {
+			b_val = 4.5;
+		}
+
+		return parseFloat(a_val) - parseFloat(b_val);
+	}
 }
 
 const TIME_IDX = Object.keys(TIME_MAPPING).sort(compareTimeIdx);
