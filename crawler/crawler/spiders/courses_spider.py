@@ -91,8 +91,7 @@ class CoursesSpider(scrapy.Spider):
         }
 
     def getSemester(self):
-        today = datetime.date.today()
-        if today.month >= 1 and today.month < 6:
-            return {'year': today.year - 1911 - 1, 'semester': 2}
-        else:
-            return {'year': today.year - 1911, 'semester': 1}
+        with open("../../../semesterConfig.json", "r") as f:
+            data = json_load(f)
+            return {'year': data.YEAR, 'semester': data.SEMESTER}
+        return {}

@@ -1,3 +1,5 @@
+import TIME from "../semesterConfig.json";
+
 const TIME_MAPPING = {
 	'A': "7:10 ~ 8:00",
 	1: "8:10 ~ 9:00",
@@ -49,13 +51,9 @@ const WEEK_MAPPING = {
 	"日": 7,
 }
 
-let currentTime = new Date();
-const SEMESTER = (currentTime.getMonth() >= 1 && currentTime.getMonth() < 6) 
-	? '2' 
-	: '1';
-const YEAR = SEMESTER === '2' 
-	? currentTime.getFullYear() - 1911-11 
-	: currentTime.getFullYear() - 1911;
+const currentTime = new Date();
+const SEMESTER = TIME.SEMESTER;
+const YEAR = TIME.YEAR;
 document.getElementById('semester-tag').innerHTML = `${YEAR} 學年度 第 ${SEMESTER} 學期`;
 document.getElementById('semester-tag').href = `https://course.thu.edu.tw/view-dept/${YEAR}/${SEMESTER}`;
 
