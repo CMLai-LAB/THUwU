@@ -1,4 +1,4 @@
-import TIME from "../semesterConfig.json";
+import TIME from "../semesterConfig.json" with { type: "json" };
 
 const TIME_MAPPING = {
 	'A': "7:10 ~ 8:00",
