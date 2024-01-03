@@ -1,6 +1,6 @@
 let SEMESTER = "2";
 let YEAR = "112";
-fetch(`../semesterConfig.json`)
+fetch(`semesterConfig.json`)
 	.then(r => r.json())
 	.then(data => {
 		SEMESTER = data["SEMESTER"];
