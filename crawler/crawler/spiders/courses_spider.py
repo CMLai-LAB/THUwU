@@ -93,6 +93,6 @@ class CoursesSpider(scrapy.Spider):
 
     def getSemester(self):
         with open("../semesterConfig.json", "r") as f:
-            data = json.loads(f)
-            return {'year': data.YEAR, 'semester': data.SEMESTER}
+            data = json.load(f)
+            return {'year': data["YEAR"], 'semester': data["SEMESTER"]}
         return {}
