@@ -1,4 +1,14 @@
-import TIME from "../semesterConfig.json" with { type: "json" };
+let SEMESTER = "2";
+let YEAR = "112";
+fetch(`../semesterConfig.json`)
+	.then(r => r.json())
+	.then(data => {
+		SEMESTER = data["SEMESTER"];
+		YEAR = data["YEAR"];
+		document.getElementById('semester-tag').innerHTML = `${YEAR} 學年度 第 ${SEMESTER} 學期`;
+		document.getElementById('semester-tag').href = `https://course.thu.edu.tw/view-dept/${YEAR}/${SEMESTER}`;
+	});
+
 
 const TIME_MAPPING = {
 	'A': "7:10 ~ 8:00",
@@ -50,12 +60,5 @@ const WEEK_MAPPING = {
 	"六": 6,
 	"日": 7,
 }
-
-const currentTime = new Date();
-const SEMESTER = TIME.SEMESTER;
-const YEAR = TIME.YEAR;
-document.getElementById('semester-tag').innerHTML = `${YEAR} 學年度 第 ${SEMESTER} 學期`;
-document.getElementById('semester-tag').href = `https://course.thu.edu.tw/view-dept/${YEAR}/${SEMESTER}`;
-
 
 const APP_URL = `${location.protocol}//${location.host}${location.pathname}`;
