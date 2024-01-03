@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51534833-6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'UA-51534833-6');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THUwU | 東海選課模擬器</title>
+
+    <meta property="og:title" content="THUwU | 東海選課模擬器" />
+    <meta property="og:description" content="就，又一個東海選課模擬器" />
+    <meta property="og:image" content="img/logo.png" />
+    <meta property="og:url" content="https://pedestrianlove.github.io/THUwU/" />
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbi@3.1.3/dist/jsbi-umd.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image@2.6.0/src/dom-to-image.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav class="navbar is-light is-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="https://pedestrianlove.github.io/THUwU/">
+                    <img alt="東海大學" src="https://www.thu.edu.tw/upload/sitemap/%E6%9D%B1%E6%B5%B7%E5%A4%A7%E5%AD%B8%E4%B8%AD%E8%8B%B1%E6%96%87%E6%A0%A1%E5%90%8D%E8%A8%AD%E8%A8%88%E5%AD%97L.png">
+                    選課模擬器 / 排課系統
+                </a>
+                <a id="semester-tag" class="navbar-item" href="#" target="_blank" rel="noopener noreferrer"></a>
+            </div>
+        </div>
+    </nav>
+    <div class="container is-widescreen">
+        <div class="columns is-desktop">
+            <div class="column is-one-quarter-desktop sidebar">
+                <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" type="text" placeholder="載入課程資料中" disabled>
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="result course-panel course-list"></div>
+                <div class="course-panel">
+                    <span class="tag is-info credits">0 學分</span>
+                    <div class="selected course-list"></div>
+                </div>
+            </div>
+            <div class="column">
+                <div style="text-align: right; margin: 0.5em;">
+                    <button id="download-link" class="button is-small">
+                        <span class="icon is-small">
+                            <i class="fas fa-download"></i>
+                        </span>
+                        <span>下載課表(BETA)</span>
+                    </button>
+
+                    <button id="copy-link" class="button is-small">
+                        <span class="icon is-small">
+                            <i class="fas fa-share-square"></i>
+                        </span>
+                        <span>複製分享連結</span>
+                    </button>
+
+                    <button id="clear-table" class="button is-small">
+                            <span class="icon is-small">
+                                <i class="fas fa-trash"></i>
+                            </span>
+                        <span>清除課表</span>
+                    </button>
+
+                    <button id="import" class="button is-small is-hidden">
+                        <span class="icon is-small">
+                            <i class="fas fa-file-import"></i>
+                        </span>
+                        <span>匯入此課表</span>
+                    </button>
+                </div>
+                <div id="main-table" class="timetable">
+                    <div class="week-names">
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                        <div>Sun</div>
+                    </div>
+                    <div class="time-interval">
+                    </div>
+                    <div class="content">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer has-text-centered">
+        <p>Designed By @splitline</p>
+        <a href="https://github.com/splitline/NCTUwU" target="_blank">
+            <span class="icon">
+                <i class="fab fa-github"></i>
+            </span>
+        </a>
+    </footer>
+
+    <template id="courseTemplate">
+        <div class="course">
+            <p>
+                <span id="id-tag" class="tag is-primary is-rounded"></span>
+                <b class="modal-launcher" id="name"></b>
+                <span id="type-tag" class="tag"></span>
+            </p>
+            <p id="detail"></p>
+            <a class="toggle-course">
+                <span class="icon">
+                    <i class="toggle-icon fas fa-plus"></i>
+                </span>
+            </a>
+        </div>
+    </template>
+
+    <div class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title"></p>
+                    <a href="#" class="card-header-icon">
+                        <span class="icon">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </span>
+                    </a>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <dl class="dl-horizontal">
+                            <dt>課號</dt>
+                            <dd></dd>
+                            <dt>開課系所</dt>
+                            <dd></dd>
+                            <dt>學分</dt>
+                            <dd></dd>
+                            <dt>教師</dt>
+                            <dd></dd>
+                            <dt>上課時間 / 教室</dt>
+                            <dd></dd>
+			                <dt>課程概述</dt>
+			                <dd></dd>
+			                <dt>評分方式</dt>
+			                <dd>
+				                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+				                    <thead>
+				                        <th>項目</th>
+				                        <th>配分</th>
+				                	    <th>說明</th>
+				                    </thead>
+
+				                    <tbody>
+                                    </tbody>
+				                </table>
+			                </dd>
+                        </dl>
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    <a href="#" target="_blank" id="outline" class="card-footer-item">課程綱要</a>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading is-hidden">
+        <span>Loading... uwu</span>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
