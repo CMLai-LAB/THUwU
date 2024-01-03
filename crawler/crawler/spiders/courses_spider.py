@@ -1,3 +1,4 @@
+import json
 import scrapy
 import datetime
 
@@ -92,6 +93,6 @@ class CoursesSpider(scrapy.Spider):
 
     def getSemester(self):
         with open("../semesterConfig.json", "r") as f:
-            data = json_load(f)
+            data = json.loads(f)
             return {'year': data.YEAR, 'semester': data.SEMESTER}
         return {}
