@@ -118,7 +118,7 @@ function openModal(courseId) {
 
     const data = courseData[courseId];
     const fields = modal.querySelectorAll('dd');
-    fields[0].textContent = courseId;
+    fields[0].textContent = data.id;
     fields[1].textContent = depData[data.department_id];
     fields[2].textContent = data.credit;
     fields[3].textContent = data.teacher;

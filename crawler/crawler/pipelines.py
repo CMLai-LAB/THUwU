@@ -31,7 +31,6 @@ class CrawlerPipeline:
         processed_course = {}
         for course_id in self.data_obj:
             self.data_obj[course_id].pop('department')
-            self.data_obj[course_id].pop('id')
             processed_course[course_id] = self.data_obj[course_id]
         with open(course_file, 'w') as outfile:
             json.dump(self.data_obj, outfile, ensure_ascii=False, indent=None, separators=(',', ':'))
