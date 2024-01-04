@@ -1,4 +1,5 @@
 let courseData = {};
+let depData = {};
 let selectedCourse = {};
 
 // Safari sucks.
@@ -50,6 +51,13 @@ TIME_IDX.forEach(period => {
 		document.querySelector('.content').appendChild(div);
 	}
 });
+
+// Fetch department data.
+fetch(`course-data/${YEAR}${SEMESTER}-dep-data.json`)
+    .then(r => r.json())
+    .then(data => {
+        depData = data;
+    });
 
 // Fetch course data.
 fetch(`course-data/${YEAR}${SEMESTER}-data.json`)
@@ -110,8 +118,8 @@ function openModal(courseId) {
 
     const data = courseData[courseId];
     const fields = modal.querySelectorAll('dd');
-    fields[0].textContent = data.id;
-    fields[1].textContent = data.department;
+    fields[0].textContent = courseId;
+    fields[1].textContent = depData[data.department_id];
     fields[2].textContent = data.credit;
     fields[3].textContent = data.teacher;
     fields[4].textContent = data.time;
