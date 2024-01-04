@@ -7,7 +7,6 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 import json
-import datetime
 
 
 class CrawlerPipeline:
@@ -25,8 +24,8 @@ class CrawlerPipeline:
         return item
 
     def getSemester(self):
-        today = datetime.date.today()
-        if today.month >= 1 and today.month < 6:
-            return {'year': today.year - 1911 - 1, 'semester': 2}
-        else:
-            return {'year': today.year - 1911, 'semester': 1}
+        with open('semesterConfig.json', 'r') as f:
+            data = json.load(f)
+            return {'year': data['YEAR'], 'semester': data['SEMESTER']}
+
+        return {}
