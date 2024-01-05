@@ -47,7 +47,17 @@
             <div class="column is-one-quarter-desktop sidebar">
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
-                        <input class="input" type="text" placeholder="載入課程資料中" disabled>
+                        <select id="department-dropdown" class="input">
+                            <option value="0" selected>全部系所</option>
+                        </select>
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-caret-down"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                        <input id="search-bar" class="input" type="text" placeholder="載入課程資料中" disabled>
                         <span class="icon is-small is-left">
                             <i class="fas fa-search"></i>
                         </span>
