@@ -204,6 +204,15 @@ function toggleCourse(courseId) {
         document.querySelectorAll(`.period[data-id="${courseId}"]`).forEach(elem => elem.remove());
         button?.classList.remove('is-selected');
     } else { // Select course
+        if (courseData[courseId].time === "無資料") {
+            Toastify({
+                text: "此課程無上課時間資料，無法加入課表",
+                backgroundColor: "linear-gradient(147deg, #f71735 0%, #db3445 74%)",
+                close: true,
+                duration: 3000
+            }).showToast();
+            return;
+        }
         const periods = parseTime(courseData[courseId].time);
         const isConflict = periods.some(period => document.getElementById(period).childElementCount)
         if (isConflict) {
