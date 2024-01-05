@@ -257,9 +257,12 @@ document.querySelector("#search-bar").oninput = event => {
 document.querySelector("#department-dropdown").onchange = function ({target}) {
     selectedDep = getDepartmentIdFromElement(target);
     document.querySelector(".result").innerHTML = '';
-    const searchTerm = document.querySelector("#search-bar").value.trim();
-    const result = search(searchTerm);
-    result.forEach(course => appendCourseElement(course, true));
+
+    if (selectedDep !== "0") {
+        const searchTerm = document.querySelector("#search-bar").value.trim();
+        const result = search(searchTerm);
+        result.forEach(course => appendCourseElement(course, true));
+    }
 }
 
 document.getElementById("import").onclick = () => {
