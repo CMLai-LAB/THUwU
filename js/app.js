@@ -92,11 +92,6 @@ function getDepartmentIdFromElement(element) {
     return element.closest('select').value;
 }
 
-document.addEventListener("change", function ({target}) {
-    if (target.classList.contains('department-tag'))
-        // selectedDep = getDepartmentIdFromElement(target);
-        console.log("FUCK");
-})
 
 document.addEventListener("click", function ({ target }) {
     if (target.classList.contains('toggle-course'))
@@ -185,9 +180,9 @@ function search(searchTerm) {
     const regex = RegExp(searchTerm, 'i');
     const result = Object.values(courseData)
         .filter(course => (
-            (selectedDep === 0)
-                ? course.department_id === selectedDep
-                : true
+            (selectedDep === "0")
+                ? true
+                : course.department_id === selectedDep
         ))
         .filter(course => (
             course.id.match(regex) ||
@@ -256,6 +251,14 @@ document.querySelector("#search-bar").oninput = event => {
 
     const result = search(searchTerm);
 
+    result.forEach(course => appendCourseElement(course, true));
+}
+
+document.querySelector("#department-dropdown").onchange = function ({target}) {
+    selectedDep = getDepartmentIdFromElement(target);
+    document.querySelector(".result").innerHTML = '';
+    const searchTerm = document.querySelector("#search-bar").value.trim();
+    const result = search(searchTerm);
     result.forEach(course => appendCourseElement(course, true));
 }
 
