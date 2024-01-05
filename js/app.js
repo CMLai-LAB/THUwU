@@ -185,10 +185,10 @@ function search(searchTerm) {
                 : course.department_id === selectedDep
         ))
         .filter(course => (
-            course.id.match(regex) ||
-            course.teacher.match(regex) ||
-            course.name.match(regex) ||
-            depData[course.department_id].match(regex)
+            course.id.match(regex)
+            || course.teacher.match(regex)
+            || course.name.match(regex)
+            || depData[course.department_id].match(regex)
         ))
         .slice(0, 50);
 
@@ -256,13 +256,11 @@ document.querySelector("#search-bar").oninput = event => {
 
 document.querySelector("#department-dropdown").onchange = function ({target}) {
     selectedDep = getDepartmentIdFromElement(target);
+    const searchTerm = document.querySelector("#search-bar").value.trim();
     document.querySelector(".result").innerHTML = '';
 
-    if (selectedDep !== "0") {
-        const searchTerm = document.querySelector("#search-bar").value.trim();
-        const result = search(searchTerm);
-        result.forEach(course => appendCourseElement(course, true));
-    }
+    const result = search(searchTerm);
+    result.forEach(course => appendCourseElement(course, true));
 }
 
 document.getElementById("import").onclick = () => {
