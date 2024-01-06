@@ -3,7 +3,7 @@
 
 <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51534833-6"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TLS5CD51NC"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -11,7 +11,7 @@
             dataLayer.push(arguments);
         }
         gtag('js', new Date());
-        gtag('config', 'UA-51534833-6');
+        gtag('config', 'G-TLS5CD51NC');
     </script>
 
     <meta charset="UTF-8">
@@ -22,10 +22,10 @@
     <meta property="og:description" content="就，又一個東海選課模擬器" />
     <meta property="og:image" content="img/logo.png" />
     <meta property="og:url" content="https://pedestrianlove.github.io/THUwU/" />
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsbi@3.1.3/dist/jsbi-umd.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbi@4.3.0/dist/jsbi-umd.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script src="https://cdn.jsdelivr.net/npm/dom-to-image@2.6.0/src/dom-to-image.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -34,7 +34,7 @@
     <nav class="navbar is-light is-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-brand">
-                <a class="navbar-item" href="https://pedestrianlove.github.io/THUwU/">
+                <a class="navbar-item" href="https://cmlai-lab.github.io/THUwU/">
                     <img alt="東海大學" src="https://www.thu.edu.tw/upload/sitemap/%E6%9D%B1%E6%B5%B7%E5%A4%A7%E5%AD%B8%E4%B8%AD%E8%8B%B1%E6%96%87%E6%A0%A1%E5%90%8D%E8%A8%AD%E8%A8%88%E5%AD%97L.png">
                     選課模擬器 / 排課系統
                 </a>
@@ -47,7 +47,18 @@
             <div class="column is-one-quarter-desktop sidebar">
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
-                        <input class="input" type="text" placeholder="載入課程資料中" disabled>
+                        <label for="department-dropdown"></label>
+                        <select id="department-dropdown" class="input">
+                            <option value="0" selected>全部系所</option>
+                        </select>
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-caret-down"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                        <input id="search-bar" class="input" type="text" placeholder="載入課程資料中" disabled>
                         <span class="icon is-small is-left">
                             <i class="fas fa-search"></i>
                         </span>
@@ -184,7 +195,9 @@
     </div>
 
     <div class="loading is-hidden">
-        <span>Loading... uwu</span>
+        <span>
+            The fear of the Lord is the beginning of wisdom: and the knowledge of the holy is understanding.
+        </span>
     </div>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="js/config.js"></script>
