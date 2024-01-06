@@ -25,6 +25,7 @@ class CoursesSpider(scrapy.Spider):
                 callback=self.parse,
                 meta={
                     'department': department.strip() if department is not None else "",
+                    'department_id': url.strip().split('/')[-1] if url is not None else "", 
                 }
             )
 
@@ -51,6 +52,7 @@ class CoursesSpider(scrapy.Spider):
                         'time': time_val.strip() if time_val is not None else "",
                         'teacher': teacher_val.strip() if teacher_val is not None else "",
                         'department': response.meta['department'],
+                        'department_id': response.meta['department_id'],
                     }
             )
 
@@ -86,6 +88,7 @@ class CoursesSpider(scrapy.Spider):
             'time': response.meta['time'],
             'teacher': response.meta['teacher'],
             'department': response.meta['department'],
+            'department_id': response.meta['department_id'],
             'url': url_val.strip() if url_val is not None else "",
             'description': desc_val.strip() if desc_val is not None else "無資料",
             'grading': grading_items,

@@ -1,7 +1,10 @@
 let courseData = {};
+let depData = {};
 let selectedCourse = {};
+let selectedDep = "0";
 
 // Safari sucks.
+
 
 const supportBigInt = typeof BigInt !== 'undefined';
 if (!supportBigInt) BigInt = JSBI.BigInt;
@@ -51,6 +54,18 @@ TIME_IDX.forEach(period => {
 	}
 });
 
+// Fetch department data and render department list
+fetch(`course-data/${YEAR}${SEMESTER}-dep-data.json`)
+    .then(r => r.json())
+    .then(data => {
+        depData = data;
+        Object.keys(depData).forEach(dep_id => {
+            const option = new Option(depData[dep_id], dep_id);
+            document.querySelector("#department-dropdown").add(option, undefined);
+        });
+    });
+
+
 // Fetch course data.
 fetch(`course-data/${YEAR}${SEMESTER}-data.json`)
     .then(r => r.json())
@@ -58,8 +73,8 @@ fetch(`course-data/${YEAR}${SEMESTER}-data.json`)
         courseData = data;
         selectedCourse = share ? loadFromShareLink() : loadFromLocalStorage();
 
-        document.querySelector(".input").disabled = false;
-        document.querySelector(".input").placeholder = "課號 / 課名 / 老師";
+        document.querySelector("#search-bar").disabled = false;
+        document.querySelector("#search-bar").placeholder = "課號 / 課名 / 老師";
         document.querySelector(".loading").classList.add("is-hidden");
         for (courseId in selectedCourse) {
             const course = courseData[courseId];
@@ -72,6 +87,11 @@ fetch(`course-data/${YEAR}${SEMESTER}-data.json`)
 function getCourseIdFromElement(element) {
     return element.closest('.course,.period').dataset.id;
 }
+
+function getDepartmentIdFromElement(element) {
+    return element.closest('select').value;
+}
+
 
 document.addEventListener("click", function ({ target }) {
     if (target.classList.contains('toggle-course'))
@@ -111,7 +131,7 @@ function openModal(courseId) {
     const data = courseData[courseId];
     const fields = modal.querySelectorAll('dd');
     fields[0].textContent = data.id;
-    fields[1].textContent = data.department;
+    fields[1].textContent = depData[data.department_id];
     fields[2].textContent = data.credit;
     fields[3].textContent = data.teacher;
     fields[4].textContent = data.time;
@@ -155,14 +175,20 @@ function appendCourseElement(course, search = false) {
 }
 
 function search(searchTerm) {
-    if (!searchTerm) return [];
+    if (!searchTerm && !selectedDep) return [];
 
     const regex = RegExp(searchTerm, 'i');
     const result = Object.values(courseData)
         .filter(course => (
-            course.id.match(regex) ||
-            course.teacher.match(regex) ||
-            course.name.match(regex)
+            (selectedDep === "0")
+                ? true
+                : course.department_id === selectedDep
+        ))
+        .filter(course => (
+            course.id.match(regex)
+            || course.teacher.match(regex)
+            || course.name.match(regex)
+            || depData[course.department_id].match(regex)
         ))
         .slice(0, 50);
 
@@ -178,6 +204,15 @@ function toggleCourse(courseId) {
         document.querySelectorAll(`.period[data-id="${courseId}"]`).forEach(elem => elem.remove());
         button?.classList.remove('is-selected');
     } else { // Select course
+        if (courseData[courseId].time === "無資料") {
+            Toastify({
+                text: "此課程無上課時間資料，無法加入課表",
+                backgroundColor: "linear-gradient(147deg, #f71735 0%, #db3445 74%)",
+                close: true,
+                duration: 3000
+            }).showToast();
+            return;
+        }
         const periods = parseTime(courseData[courseId].time);
         const isConflict = periods.some(period => document.getElementById(period).childElementCount)
         if (isConflict) {
@@ -218,14 +253,22 @@ function renderPeriodBlock(course) {
     </div>`);
 }
 
-document.querySelector(".input").oninput = event => {
+document.querySelector("#search-bar").oninput = event => {
     document.querySelector(".result").innerHTML = '';
+
     const searchTerm = event.target.value.trim();
-    if (searchTerm.includes("'"))
-        document.querySelector(".result").textContent = "1064 - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''' at line 1.";
 
     const result = search(searchTerm);
 
+    result.forEach(course => appendCourseElement(course, true));
+}
+
+document.querySelector("#department-dropdown").onchange = function ({target}) {
+    selectedDep = getDepartmentIdFromElement(target);
+    const searchTerm = document.querySelector("#search-bar").value.trim();
+    document.querySelector(".result").innerHTML = '';
+
+    const result = search(searchTerm);
     result.forEach(course => appendCourseElement(course, true));
 }
 
