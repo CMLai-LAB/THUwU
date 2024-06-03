@@ -1,5 +1,5 @@
-let SEMESTER = "2";
-let YEAR = "112";
+let SEMESTER = "1";
+let YEAR = "113";
 fetch(`semesterConfig.json`)
 	.then(r => r.json())
 	.then(data => {
