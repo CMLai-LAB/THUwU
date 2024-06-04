@@ -41,17 +41,17 @@ if (location.search.includes("share=")) {
 
 // Render timetable.
 TIME_IDX.forEach(period => {
-	const div = document.createElement("div");
-	div.textContent = `${period} / ${TIME_MAPPING[period]}`;
-	document.querySelector(".time-interval").appendChild(div);
+    const div = document.createElement("div");
+    div.textContent = `${period} / ${TIME_MAPPING[period]}`;
+    document.querySelector(".time-interval").appendChild(div);
 });
 
 TIME_IDX.forEach(period => {
-	for (let day = 1; day <= 7; ++day) {
-		const div = document.createElement("div");
-		div.id = `${day}${period}`;
-		document.querySelector('.content').appendChild(div);
-	}
+    for (let day = 1; day <= 7; ++day) {
+        const div = document.createElement("div");
+        div.id = `${day}${period}`;
+        document.querySelector('.content').appendChild(div);
+    }
 });
 
 // Fetch department data and render department list
@@ -93,7 +93,7 @@ function getDepartmentIdFromElement(element) {
 }
 
 
-document.addEventListener("click", function ({ target }) {
+document.addEventListener("click", function({ target }) {
     if (target.classList.contains('toggle-course'))
         toggleCourse(getCourseIdFromElement(target));
 
@@ -101,7 +101,7 @@ document.addEventListener("click", function ({ target }) {
         openModal(getCourseIdFromElement(target));
 })
 
-document.addEventListener("mouseover", function (event) {
+document.addEventListener("mouseover", function(event) {
     if (event.target.matches('.result .course, .result .course *')) {
         const courseId = getCourseIdFromElement(event.target);
         const result = parseTime(courseData[courseId].time);
@@ -114,7 +114,7 @@ document.addEventListener("mouseover", function (event) {
     }
 })
 
-document.addEventListener("mouseout", function (event) {
+document.addEventListener("mouseout", function(event) {
     if (event.target.matches('.result .course, .result .course *')) {
         document.querySelectorAll('.timetable>.content>[class="has-background-info-light"]')
             .forEach(elem => {
@@ -135,10 +135,11 @@ function openModal(courseId) {
     fields[2].textContent = data.credit;
     fields[3].textContent = data.teacher;
     fields[4].textContent = data.time;
-    fields[5].textContent = data.description;
-    fields[6].querySelector('tbody').innerHTML = "";
+    fields[5].textContent = data.brief;
+    fields[6].textContent = data.description;
+    fields[7].querySelector('tbody').innerHTML = "";
     data.grading.forEach((grading) => {
-    	fields[6].querySelector('tbody').innerHTML += `
+        fields[7].querySelector('tbody').innerHTML += `
     	<tr>
     	<td>${grading.target}</td>
     	<td>${grading.ratio}</td>
@@ -188,6 +189,7 @@ function search(searchTerm) {
             course.id.match(regex)
             || course.teacher.match(regex)
             || course.name.match(regex)
+            || course.brief.match(regex)
             || depData[course.department_id].match(regex)
         ))
         .slice(0, 50);
@@ -263,7 +265,7 @@ document.querySelector("#search-bar").oninput = event => {
     result.forEach(course => appendCourseElement(course, true));
 }
 
-document.querySelector("#department-dropdown").onchange = function ({target}) {
+document.querySelector("#department-dropdown").onchange = function({ target }) {
     selectedDep = getDepartmentIdFromElement(target);
     const searchTerm = document.querySelector("#search-bar").value.trim();
     document.querySelector(".result").innerHTML = '';
@@ -323,10 +325,10 @@ document.getElementById("download-link").onclick = () => {
         table_element.classList.remove('btn-outline-light');
         table_element.classList.add('btn-outline-dark');
     });
-    setTimeout(function(){
+    setTimeout(function() {
         let table = document.getElementById("main-table");
         domtoimage.toPng(table)
-            .then(function (dataURL) {
+            .then(function(dataURL) {
                 var link = document.createElement('a');
                 link.href = dataURL;
                 link.download = YEAR + '-' + SEMESTER + '_timetable.png';
