@@ -63,9 +63,22 @@ fetch(`course-data/${YEAR}${SEMESTER}-dep-data.json`)
     .then((r) => r.json())
     .then((data) => {
         depData = data;
-        Object.keys(depData).forEach((dep_id) => {
-            const option = new Option(depData[dep_id], dep_id);
-            document.querySelector("#department-dropdown").add(option, undefined);
+        const groupedDepartments = Object.entries(depData).reduce((acc, [key, value]) => {
+            const groupKey = value.college; // or any other attribute you want to group by
+            if (!acc[groupKey]) {
+                acc[groupKey] = [];
+            }
+            acc[groupKey].push({ key, value });
+            return acc;
+        }, {});
+        Object.keys(groupedDepartments).forEach((college) => {
+            const optGroup = document.createElement("optgroup");
+            optGroup.label = college;
+            groupedDepartments[college].forEach((dep) => {
+                const option = new Option(dep.value.name, dep.key);
+                optGroup.appendChild(option);
+            });
+            document.querySelector("#department-dropdown").appendChild(optGroup);
         });
     });
 
@@ -145,7 +158,7 @@ function openModal(courseId) {
     const data = courseData[courseId];
     const fields = modal.querySelectorAll("dd");
     fields[0].textContent = data.id;
-    fields[1].textContent = depData[data.department_id];
+    fields[1].textContent = depData[data.department_id].name;
     fields[2].textContent = data.credit;
     fields[3].textContent = data.teacher;
     fields[4].textContent = data.time;
@@ -207,7 +220,7 @@ function search(searchTerm) {
             course.teacher.match(regex) ||
             course.name.match(regex) ||
             course.brief.match(regex) ||
-            depData[course.department_id].match(regex)
+            depData[course.department_id].name.match(regex)
         ))
         .slice(0, 50);
 
