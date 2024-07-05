@@ -1,6 +1,5 @@
 import json
 import scrapy
-import datetime
 
 
 class CoursesSpider(scrapy.Spider):
@@ -10,15 +9,28 @@ class CoursesSpider(scrapy.Spider):
         semester = self.getSemester()
 
         # Get all urls
-        urls = [
-            "https://course.thu.edu.tw/view-dept/" +
-            str(semester['year']) + "/" +
-            str(semester['semester']) + "/everything",
-        ]
-        for url in urls:
-            yield scrapy.Request(url=url, callback=self.getUrls)
+        url = "https://course.thu.edu.tw/view-dept/" + \
+            str(semester['year']) + "/" + str(semester['semester']) + "/"
 
-    def getUrls(self, response):
+        yield scrapy.Request(url=url, callback=self.getCollege)
+
+    def getCollege(self, response):
+        target_list = response.xpath(
+            "/html/body/div/div[2]/div[2]/div[2]/div[1]/ul")
+        for college in target_list.xpath(".//li"):
+            college_name = college.xpath(".//a/span[2]/text()").get()
+            url = college.xpath(".//a/@href").get()
+            if college_name == "全部列出":
+                continue
+            yield response.follow(
+                url,
+                callback=self.getDepartments,
+                meta={
+                    'college': college_name,
+                }
+            )
+
+    def getDepartments(self, response):
         target_table = response.xpath(
             "/html/body/div/div[2]/div[2]/div[2]/div[2]/table/tbody")
         for url in target_table.xpath(".//tr"):
@@ -28,6 +40,7 @@ class CoursesSpider(scrapy.Spider):
                 url,
                 callback=self.parse,
                 meta={
+                    'college': response.meta['college'],
                     'department': department.strip() if department is not None else "",
                     'department_id': url.strip().split('/')[-1] if url is not None else "",
                 }
@@ -58,6 +71,7 @@ class CoursesSpider(scrapy.Spider):
                     'credit': max(credit_val.strip().split('-')) if credit_val is not None else "",
                     'time': time_val.strip() if time_val is not None else "",
                     'teacher': teacher_val.strip() if teacher_val is not None else "",
+                    'college': response.meta['college'],
                     'department': response.meta['department'],
                     'department_id': response.meta['department_id'],
                     'brief': brief_val.strip() if brief_val is not None else "",
@@ -98,6 +112,7 @@ class CoursesSpider(scrapy.Spider):
             'credit': response.meta['credit'],
             'time': response.meta['time'],
             'teacher': response.meta['teacher'],
+            'college': response.meta['college'],
             'department': response.meta['department'],
             'department_id': response.meta['department_id'],
             'url': url_val.strip() if url_val is not None else "",
