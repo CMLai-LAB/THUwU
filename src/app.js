@@ -129,7 +129,9 @@ fetch(`course-data/${YEAR}${SEMESTER}-data.json`)
         document.querySelector(".loading").classList.add("is-hidden");
         for (const courseId in selectedCourse) {
             const course = courseData[courseId];
-            renderPeriodBlock(course);
+            if (course.time !== "無資料") {
+                renderPeriodBlock(course);
+            }
             appendCourseElement(course);
         }
         document.querySelector(".credits").textContent =
@@ -144,7 +146,7 @@ function getDepartmentIdFromElement(element) {
     return element.closest("select").value;
 }
 
-document.addEventListener("click", function ({ target }) {
+document.addEventListener("click", function({ target }) {
     if (target.classList.contains("toggle-course")) {
         toggleCourse(getCourseIdFromElement(target));
     }
@@ -154,7 +156,7 @@ document.addEventListener("click", function ({ target }) {
     }
 });
 
-document.addEventListener("mouseover", function (event) {
+document.addEventListener("mouseover", function(event) {
     if (event.target.matches(".result .course, .result .course *")) {
         const courseId = getCourseIdFromElement(event.target);
         const result = parseTime(courseData[courseId].time);
@@ -171,7 +173,7 @@ document.addEventListener("mouseover", function (event) {
     }
 });
 
-document.addEventListener("mouseout", function (event) {
+document.addEventListener("mouseout", function(event) {
     if (event.target.matches(".result .course, .result .course *")) {
         document.querySelectorAll(
             '.timetable>.content>[class="has-background-info-light"]',
@@ -229,6 +231,14 @@ function appendCourseElement(course, search = false) {
         ? "tag is-rounded is-info"
         : type_tag.className;
 
+    const time_tag = template.content.getElementById("time-tag");
+    if (course.time === "無資料") {
+        time_tag.textContent = "無上課時間";
+        time_tag.className = "tag is-rounded is-warning";
+    } else {
+        time_tag.className = "tag is-hidden"
+    }
+
     template.content.getElementById("name").textContent = course.name;
     template.content.getElementById("detail").textContent =
         `${course.teacher}・${+course.credit} 學分`;
@@ -276,33 +286,37 @@ function toggleCourse(courseId) {
         button?.classList.remove("is-selected");
     } else { // Select course
         if (courseData[courseId].time === "無資料") {
+            // 無課程時間
             Toastify({
-                text: "此課程無上課時間資料，無法加入課表",
+                text: "此課程無上課時間資料，只能加入課程列表",
                 backgroundColor:
                     "linear-gradient(147deg, #f71735 0%, #db3445 74%)",
                 close: true,
                 duration: 3000,
             }).showToast();
-            return;
-        }
-        const periods = parseTime(courseData[courseId].time);
-        const isConflict = periods.some((period) =>
-            document.getElementById(period).childElementCount
-        );
-        if (isConflict) {
-            Toastify({
-                text: "和目前課程衝堂了欸",
-                backgroundColor:
-                    "linear-gradient(147deg, #f71735 0%, #db3445 74%)",
-                close: true,
-                duration: 3000,
-            }).showToast();
-            return;
+
+        } else {
+            // 有課程時間
+            const periods = parseTime(courseData[courseId].time);
+            const isConflict = periods.some((period) =>
+                document.getElementById(period).childElementCount
+            );
+            if (isConflict) {
+                Toastify({
+                    text: "和目前課程衝堂了欸",
+                    backgroundColor:
+                        "linear-gradient(147deg, #f71735 0%, #db3445 74%)",
+                    close: true,
+                    duration: 3000,
+                }).showToast();
+                return;
+            }
+
+            renderPeriodBlock(courseData[courseId]);
         }
 
         selectedCourse[courseId] = true;
         appendCourseElement(courseData[courseId]);
-        renderPeriodBlock(courseData[courseId]);
         button?.classList.add("is-selected");
     }
 
@@ -317,7 +331,7 @@ function parseTime(timeCode) {
 
     if (!timeList) return [];
 
-    return timeList.map(function (code) {
+    return timeList.map(function(code) {
         const time_arr = code.split("/")[1].split(",");
         return time_arr.map((time) => WEEK_MAPPING[code[0]] + time);
     }).flat();
@@ -343,7 +357,7 @@ document.querySelector("#search-bar").oninput = (event) => {
     result.forEach((course) => appendCourseElement(course, true));
 };
 
-document.querySelector("#department-dropdown").onchange = function (
+document.querySelector("#department-dropdown").onchange = function(
     { target },
 ) {
     selectedDep = getDepartmentIdFromElement(target);
@@ -409,10 +423,10 @@ document.getElementById("download-link").onclick = () => {
         table_element.classList.remove("btn-outline-light");
         table_element.classList.add("btn-outline-dark");
     });
-    setTimeout(function () {
+    setTimeout(function() {
         const table = document.getElementById("main-table");
         toPng(table)
-            .then(function (dataURL) {
+            .then(function(dataURL) {
                 const link = document.createElement("a");
                 link.href = dataURL;
                 link.download = YEAR + "-" + SEMESTER + "_timetable.png";
