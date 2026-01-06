@@ -14,7 +14,7 @@ class CrawlerPipeline:
         self.data_obj = {}
 
     def close_spider(self, spider):
-        semester = self.getSemester()
+        semester = {'year': spider.YEAR, 'semester': spider.SEMESTER}
 
         # Save the department data
         department = {}
@@ -46,10 +46,3 @@ class CrawlerPipeline:
     def process_item(self, item, spider):
         self.data_obj[item["id"]] = item
         return item
-
-    def getSemester(self):
-        with open('../semesterConfig.json', 'r') as f:
-            data = json.load(f)
-            return {'year': data['YEAR'], 'semester': data['SEMESTER']}
-
-        return {}
