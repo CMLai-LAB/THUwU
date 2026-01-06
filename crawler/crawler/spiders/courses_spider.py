@@ -6,6 +6,11 @@ class CoursesSpider(scrapy.Spider):
     name = "courses"
     patched = False
 
+    def __init__(self, year=None, semester=None, *args, **kwargs):
+        super(CoursesSpider, self).__init__(*args, **kwargs)
+        self.YEAR=str(year)
+        self.SEMESTER=str(semester)
+
     def start_requests(self):
         semester = self.getSemester()
 
@@ -146,10 +151,7 @@ class CoursesSpider(scrapy.Spider):
         }
 
     def getSemester(self):
-        with open("../semesterConfig.json", "r") as f:
-            data = json.load(f)
-            return {'year': data["YEAR"], 'semester': data["SEMESTER"]}
-        return {}
+        return {'year': self.YEAR, 'semester': self.SEMESTER}
 
     def getCustomDepartmentUrl(self, department_id):
         print("Patching missing departments")
